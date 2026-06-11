@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: smartApi
+  ai:
+    google:
+      genai:
+        chat:
+          options:
+            temperature: 0.8
+            response-format:
+              type: TEXT
+            model: gemini-2.5-flash-lite
+        api-key: ${GENAI_KEY}
