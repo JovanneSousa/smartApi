@@ -6,34 +6,15 @@ spring:
   application:
     name: smartApi
   ai:
-    model:
-      transcription: openai
-      audio:
-        speech: openai
-    openai:
-      chat:
-        options:
-          temperature: 0.8
-          response-format:
-            type: TEXT
-      api-key: ${OPENAI_KEY}
-      audio:
-        speech:
+    google:
+      model:
+        transcription: genai
+        audio:
+          speech: genai
+      genai:
+        chat:
           options:
-            voice: nova
-            speed: 1.2
-            response-format: mp3
-            model: gpt-4o-mini-tts
-        transcription:
-          options:
-            model: whisper-1
-            language: pt
-            temperature: 0
-            response-format: TEXT
-            prompt: |
-              Áudio em português brasileiro.
-              Áudio possui descrição de gastos financeiros.
-              As frases geralmente contêm:
-              - um valor em reais (número + "reais")
-              - uma ação (gastei, paguei, comprei)
-              - um local ou estabelecimento (mercado, farmácia, restaurante, loja etc.)
+            temperature: 0.8
+            response-format:
+              type: TEXT
+        api-key: ${GENAI_KEY}

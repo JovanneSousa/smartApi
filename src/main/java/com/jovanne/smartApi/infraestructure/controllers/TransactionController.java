@@ -2,22 +2,16 @@ package com.jovanne.smartApi.infraestructure.controllers;
 
 import com.jovanne.smartApi.application.ListTransactionsByCategoryUseCase;
 import com.jovanne.smartApi.application.PersistTransactionUseCase;
+import com.jovanne.smartApi.application.services.AudioTranscriber;
 import com.jovanne.smartApi.domain.Category;
-import com.jovanne.smartApi.domain.Transaction;
 import com.jovanne.smartApi.infraestructure.controllers.request.TransactionRequest;
 import com.jovanne.smartApi.infraestructure.controllers.response.TransactionResponse;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.ai.audio.transcription.TranscriptionModel;
-import org.springframework.ai.audio.tts.TextToSpeechModel;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,8 +30,8 @@ public class TransactionController {
     @Autowired
     TranscriptionModel transcriptionModel;
 
-    @Autowired
-    TextToSpeechModel speechModel;
+//    @Autowired
+//    TextToSpeechModel speechModel;
 
     public TransactionController(
             PersistTransactionUseCase persist,
@@ -70,20 +64,24 @@ public class TransactionController {
     };
 
     @PostMapping(value = "/ai", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "audio/mp3")
-    ResponseEntity<Resource> trancribe (@RequestParam("file") MultipartFile file) {
-        var resoure = file.getResource();
-        var userMessage = transcriptionModel.transcribe(resoure);
-        var result = chatClient.prompt()
-                .user(userMessage)
-                .call()
-                .content();
+    ResponseEntity<?> trancribe (@RequestParam("file") MultipartFile file) {
+        try {
+            var resoure = file.getResource();
+            var userMessage = transcriptionModel.transcribe(resoure);
+            var result = chatClient.prompt()
+                    .user(userMessage)
+                    .call()
+                    .content();
 
-        return ResponseEntity.created(URI.create("/transactions"))
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        ContentDisposition.attachment()
-                                .filename("audio.mp3")
-                                .build()
-                                .toString() )
-                .body(new ByteArrayResource(speechModel.call(result)));
+            return ResponseEntity.created(URI.create("/transactions"))
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            ContentDisposition.attachment()
+                                    .filename("audio.mp3")
+                                    .build()
+                                    .toString() )
+                    .body(result);
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 }

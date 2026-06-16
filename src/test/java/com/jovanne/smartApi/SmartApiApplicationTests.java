@@ -2,7 +2,7 @@ package com.jovanne.smartApi;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
-import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnabledIfEnvironmentVariable(named = "OPENAI_KEY", matches = ".+")
 class SmartApiApplicationTests {
     @Autowired
-    OpenAiChatModel chatModel;
+    ChatModel chatModel;
 
 	@Test
     void should_recieveResponse_when_chatModelIsCalled() {

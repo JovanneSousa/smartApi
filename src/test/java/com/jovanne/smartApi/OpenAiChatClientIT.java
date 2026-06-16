@@ -3,8 +3,8 @@ package com.jovanne.smartApi;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnabledIfEnvironmentVariable(named = "OPENAI_KEY", matches = ".+")
 public class OpenAiChatClientIT {
     @Autowired
-    OpenAiChatModel chatModel;
+    ChatModel chatModel;
 
     @Test
     void should_executeSum_when_prompted() {
