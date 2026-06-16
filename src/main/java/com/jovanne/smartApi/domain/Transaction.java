@@ -1,22 +1,19 @@
 package com.jovanne.smartApi.domain;
 
+import com.jovanne.smartApi.infraestructure.http.request.TransactionRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @AllArgsConstructor
 public class Transaction {
-    private String transactionId;
-    private String description;
-    private Category category;
+//    private String userId = "";
+    private String title;
     private long amount;
-
-    public Transaction(String description, Category category, long amount) {
-        this.transactionId = UUID.randomUUID().toString();
-        this.description = description;
-        this.category = category;
-        this.amount = amount;
-    }
+    private String idCategory;
+    private LocalDateTime movementDate;
+    private boolean isRecurring;
 }
