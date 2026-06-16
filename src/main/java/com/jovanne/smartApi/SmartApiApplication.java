@@ -11,11 +11,6 @@ import org.springframework.context.annotation.Bean;
 @EnableFeignClients
 public class SmartApiApplication {
 
-    @Bean
-    ChatClient chatClient(ChatClient.Builder builder) {
-        return builder.build();
-    }
-
 	public static void main(String[] args) {
 		SpringApplication.run(SmartApiApplication.class, args);
 	}
