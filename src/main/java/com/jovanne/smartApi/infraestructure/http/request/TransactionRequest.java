@@ -1,8 +1,8 @@
 package com.jovanne.smartApi.infraestructure.http.request;
 
-import com.jovanne.smartApi.application.TransactionAiDTO;
-import com.jovanne.smartApi.domain.Category;
-import com.jovanne.smartApi.domain.TransacaoType;
+import com.jovanne.smartApi.application.dtos.TransactionAiDTO;
+import com.jovanne.smartApi.domain.entities.Category;
+import com.jovanne.smartApi.domain.entities.TransacaoType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

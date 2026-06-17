@@ -1,9 +1,7 @@
-package com.jovanne.smartApi.infraestructure.http;
+package com.jovanne.smartApi.infraestructure.http.controllers;
 
-import com.jovanne.smartApi.application.TransactionAiDTO;
-import com.jovanne.smartApi.application.services.TransactionService;
-import com.jovanne.smartApi.domain.ITransactionService;
-import com.jovanne.smartApi.infraestructure.http.response.TransactionResponse;
+import com.jovanne.smartApi.domain.interfaces.ITransactionService;
+import com.jovanne.smartApi.infraestructure.http.response.ErrorResponse;
 import org.springframework.ai.audio.transcription.TranscriptionModel;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,7 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
@@ -39,13 +38,13 @@ public class TransactionController {
                 .defaultSystem(systemPrompt.getContentAsString(Charset.defaultCharset()))
                 .build();
     }
-
-    @PostMapping
-    ResponseEntity<TransactionResponse> createTransaction(@RequestBody TransactionAiDTO request) {
-        var transaction = transactionService.registerTransaction(request);
-        return ResponseEntity.created(URI.create("/transactions/" + transaction.id()))
-                .body(transaction);
-    }
+//
+//    @PostMapping
+//    ResponseEntity<TransactionResponse> createTransaction(@RequestBody TransactionAiDTO request) {
+//        var transaction = transactionService.registerTransaction(request);
+//        return ResponseEntity.created(URI.create("/transactions/" + transaction.id()))
+//                .body(transaction);
+//    }
 
     @PostMapping(value = "/ai", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<?> trancribe (@RequestParam("file") MultipartFile file) {
@@ -64,9 +63,11 @@ public class TransactionController {
         } catch (Exception ex) {
             ex.printStackTrace();
             return ResponseEntity.badRequest()
-                    .body(ex.getCause() != null ?
-                            ex.getCause().getMessage() :
-                            ex.getMessage());
+                    .body(new ErrorResponse(
+                            400,
+                            ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage(),
+                            List.of()
+                    ));
         }
     }
 }

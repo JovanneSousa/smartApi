@@ -1,4 +1,4 @@
-package com.jovanne.smartApi.domain;
+package com.jovanne.smartApi.domain.entities;
 
 public enum TransacaoType {
     RENDA,

@@ -41,7 +41,7 @@ public class AudioTranscriber implements TranscriptionModel {
     }
 
     private String executeScript(Path audioPath) throws IOException, InterruptedException {
-        String script = "C:/dev/backend/java/smartApi/src/main/resources/scripts/transcribe.py";
+        String script = "C:/dev/backend/python/transcription/transcribe.py";
         Process process = new ProcessBuilder(
                 "python",
                 script,

@@ -20,4 +20,4 @@ spring:
         api-key: ${GENAI_KEY}
 api:
   financeira:
-    url: http://localhost:5173/api
+    url:  http://localhost:5087/api

@@ -1,10 +1,12 @@
 package com.jovanne.smartApi.application.services;
 
-import com.jovanne.smartApi.application.TransactionAiDTO;
-import com.jovanne.smartApi.domain.ITransactionService;
+import com.jovanne.smartApi.application.tool.ToolResult;
+import com.jovanne.smartApi.application.dtos.TransactionAiDTO;
+import com.jovanne.smartApi.domain.interfaces.ITransactionService;
+import com.jovanne.smartApi.domain.exceptions.FinanceiroClientException;
 import com.jovanne.smartApi.infraestructure.http.request.TransactionRequest;
 import com.jovanne.smartApi.infraestructure.http.response.TransactionResponse;
-import com.jovanne.smartApi.infraestructure.http.services.IFinanceiroClient;
+import com.jovanne.smartApi.infraestructure.http.clients.IFinanceiroClient;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,22 @@ public class TransactionService implements ITransactionService {
 
     @Override
     @Tool(name = "register-transactions", description = "Registra uma nova transação financeira")
-    public TransactionResponse registerTransaction(TransactionAiDTO dtoAi) {
+    public ToolResult registerTransaction(TransactionAiDTO dtoAi) {
         System.out.println("Criando");
-        var request = TransactionRequest.fromAi(dtoAi);
-        System.out.println(request.toString());
-        return TransactionResponse.fromRequest(request);
+        try {
+            var request = TransactionRequest.fromAi(dtoAi);
+            var result = client.createTransaction(request);
+            return ToolResult.ok("Transação registrada com sucesso! ID: " + result.id());
+//        } catch (FeignException e) {
+//            e.printStackTrace();
+//            String detail = e.contentUTF8() != null && !e.contentUTF8().isBlank()
+//                    ? e.contentUTF8()
+//                    : "status " + e.status();
+//            return ToolResult.error("Erro ao registrar transação", List.of(detail));
+        } catch (FinanceiroClientException ex) {
+            String message = ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage();
+            return ToolResult.error("Erro genérico: " + message, List.of());
+        }
     }
 
     @Override

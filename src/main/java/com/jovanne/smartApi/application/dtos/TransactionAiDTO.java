@@ -1,7 +1,7 @@
-package com.jovanne.smartApi.application;
+package com.jovanne.smartApi.application.dtos;
 
-import com.jovanne.smartApi.domain.Category;
-import com.jovanne.smartApi.domain.TransacaoType;
+import com.jovanne.smartApi.domain.entities.Category;
+import com.jovanne.smartApi.domain.entities.TransacaoType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
