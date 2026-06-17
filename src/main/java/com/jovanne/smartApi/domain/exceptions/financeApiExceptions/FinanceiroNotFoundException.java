@@ -1,4 +1,4 @@
-package com.jovanne.smartApi.domain.exceptions;
+package com.jovanne.smartApi.domain.exceptions.financeApiExceptions;
 
 import com.jovanne.smartApi.infraestructure.http.response.FinanceiroErrorResponse;
 

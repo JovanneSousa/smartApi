@@ -1,6 +1,6 @@
 package com.jovanne.smartApi.infraestructure.http.handlers;
 
-import com.jovanne.smartApi.domain.exceptions.FinanceiroClientException;
+import com.jovanne.smartApi.domain.exceptions.financeApiExceptions.FinanceiroClientException;
 import com.jovanne.smartApi.infraestructure.http.response.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

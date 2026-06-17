@@ -1,5 +1,6 @@
 package com.jovanne.smartApi.infraestructure.http.controllers;
 
+import com.jovanne.smartApi.application.tool.ToolResultHolder;
 import com.jovanne.smartApi.domain.interfaces.ITransactionService;
 import com.jovanne.smartApi.infraestructure.http.response.ErrorResponse;
 import org.springframework.ai.audio.transcription.TranscriptionModel;
@@ -26,6 +27,8 @@ public class TransactionController {
 
     @Autowired
     TranscriptionModel transcriptionModel;
+    @Autowired
+    ToolResultHolder holder;
 
     public TransactionController(
             ITransactionService transactionService,
@@ -49,25 +52,21 @@ public class TransactionController {
     @PostMapping(value = "/ai", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<?> trancribe (@RequestParam("file") MultipartFile file) {
         String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-        try {
-            var resoure = file.getResource();
-            var userMessage = transcriptionModel.transcribe(resoure);
-            var result = chatClient.prompt()
-                    .system(s -> s.param("currentDateTime", currentDateTime))
-                    .user(userMessage)
-                    .call()
-                    .content();
+        var resoure = file.getResource();
+        var userMessage = transcriptionModel.transcribe(resoure);
+        var result = chatClient.prompt()
+                .system(s -> s.param("currentDateTime", currentDateTime))
+                .user(userMessage)
+                .call()
+                .content();
 
-            return ResponseEntity.created(URI.create("/transactions"))
-                    .body(result.toString());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return ResponseEntity.badRequest()
-                    .body(new ErrorResponse(
-                            400,
-                            ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage(),
-                            List.of()
-                    ));
+        if(!holder.get().success()) {
+            return ResponseEntity
+                    .status(holder.get().statusCode())
+                    .body(ErrorResponse.fromToolResultHolder(holder));
         }
+
+        return ResponseEntity.created(URI.create("/transactions"))
+                .body(result.toString());
     }
 }

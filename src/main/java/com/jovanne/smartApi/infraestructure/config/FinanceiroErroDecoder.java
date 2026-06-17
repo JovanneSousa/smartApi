@@ -1,7 +1,7 @@
 package com.jovanne.smartApi.infraestructure.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jovanne.smartApi.domain.exceptions.*;
+import com.jovanne.smartApi.domain.exceptions.financeApiExceptions.*;
 import com.jovanne.smartApi.infraestructure.http.response.FinanceiroErrorResponse;
 import feign.Response;
 import feign.codec.ErrorDecoder;

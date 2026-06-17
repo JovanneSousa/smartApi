@@ -1,6 +1,8 @@
-package com.jovanne.smartApi.domain.exceptions;
+package com.jovanne.smartApi.domain.exceptions.financeApiExceptions;
 
 import com.jovanne.smartApi.infraestructure.http.response.FinanceiroErrorResponse;
+
+import java.util.List;
 
 public class FinanceiroClientException extends RuntimeException{
     private final int statusCode;
@@ -17,4 +19,8 @@ public class FinanceiroClientException extends RuntimeException{
 
     public int getStatusCode() { return statusCode; }
     public FinanceiroErrorResponse getErrorResponse() { return errorResponse; }
+    public List<String> getListOfErrors() {
+        if (errorResponse.errors() == null) return List.of();
+        return errorResponse.errors();
+    }
 }
