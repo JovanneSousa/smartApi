@@ -4,10 +4,10 @@ import com.jovanne.smartApi.application.tool.ToolResult;
 import com.jovanne.smartApi.application.dtos.TransactionAiDTO;
 import com.jovanne.smartApi.application.tool.ToolResultHolder;
 import com.jovanne.smartApi.domain.interfaces.ITransactionService;
-import com.jovanne.smartApi.domain.exceptions.financeApiExceptions.FinanceiroClientException;
+import com.jovanne.smartApi.domain.exceptions.financeApiExceptions.FinanceClientException;
 import com.jovanne.smartApi.infraestructure.http.request.TransactionRequest;
 import com.jovanne.smartApi.infraestructure.http.response.TransactionResponse;
-import com.jovanne.smartApi.infraestructure.http.clients.IFinanceiroClient;
+import com.jovanne.smartApi.infraestructure.http.clients.IFinanceClient;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public class TransactionService implements ITransactionService {
     @Autowired
-    IFinanceiroClient client;
+    IFinanceClient financeClient;
 
     @Autowired
     ToolResultHolder holderResult;
@@ -27,18 +27,18 @@ public class TransactionService implements ITransactionService {
     public ToolResult registerTransaction(TransactionAiDTO dtoAi) {
         try {
             var request = TransactionRequest.fromAi(dtoAi);
-            var result = client.createTransaction(request);
+            var result = financeClient.createTransaction(request);
             holderResult.set(
                     ToolResult.ok(201,"Transação registrada com sucesso! ID: " + result.id())
             );
             return holderResult.get();
 
-        } catch (FinanceiroClientException ex) {
-            return RetornaErro(ex);
+        } catch (FinanceClientException ex) {
+            return returnsError(ex);
         }
     }
 
-    private ToolResult RetornaErro(FinanceiroClientException ex) {
+    private ToolResult returnsError(FinanceClientException ex) {
         String message = ex.getCause() != null ?
                 ex.getCause().getMessage() :
                 ex.getMessage();

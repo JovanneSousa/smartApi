@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
 
 @FeignClient(
-        name = "Financeiro",
+        name = "Finance",
         url = "${api.financeira.url}",
         configuration = FinanceiroClientConfig.class
 )
-public interface IFinanceiroClient {
+public interface IFinanceClient {
 
     @PostMapping("/transacoes/novo")
     TransactionResponse createTransaction(TransactionRequest request);

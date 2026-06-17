@@ -20,4 +20,6 @@ spring:
         api-key: ${GENAI_KEY}
 api:
   financeira:
-    url:  ${API_URL}
+    url:  ${FINANCE_URL}
+  auth:
+    url: ${AUTH_URL}

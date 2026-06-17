@@ -4,11 +4,11 @@ import com.jovanne.smartApi.infraestructure.http.response.FinanceiroErrorRespons
 
 import java.util.List;
 
-public class FinanceiroClientException extends RuntimeException{
+public class FinanceClientException extends RuntimeException{
     private final int statusCode;
     private final FinanceiroErrorResponse errorResponse;
 
-    public FinanceiroClientException(
+    public FinanceClientException(
             int statusCode,
             String message,
             FinanceiroErrorResponse errorResponse) {

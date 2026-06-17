@@ -20,12 +20,12 @@ public class FinanceiroErroDecoder implements ErrorDecoder {
         var errorResponse = extractBody(response);
 
         return switch (response.status()) {
-            case 400 -> new FinanceiroBadRequestException(errorResponse);
-            case 401 -> new FinanceiroUnauthorizedException(errorResponse);
-            case 403 -> new FinanceiroForbbidenException(errorResponse);
-            case 404 -> new FinanceiroNotFoundException(errorResponse);
-            case 500 -> new FinanceiroServerErrorException(errorResponse);
-            default -> new FinanceiroClientException(
+            case 400 -> new FinanceBadRequestException(errorResponse);
+            case 401 -> new FinanceUnauthorizedException(errorResponse);
+            case 403 -> new FinanceForbbidenException(errorResponse);
+            case 404 -> new FinanceNotFoundException(errorResponse);
+            case 500 -> new FinanceServerErrorException(errorResponse);
+            default -> new FinanceClientException(
                     response.status(),
                     "Erro inesperado do serviço financeiro",
                     errorResponse
