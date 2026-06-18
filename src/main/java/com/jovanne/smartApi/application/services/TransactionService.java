@@ -37,8 +37,6 @@ public class TransactionService implements ITransactionService {
     @Override
     @Tool(name = "register-transactions", description = "Registra uma nova transação financeira")
     public ToolResult registerTransaction(TransactionAiDTO dtoAi) {
-
-
         try {
             var login = new LoginDTO(
                     userDemo,
