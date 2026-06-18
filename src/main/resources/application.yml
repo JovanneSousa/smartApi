@@ -1,4 +1,9 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    port: 5432
+    username: postgres
+    password: postgres
   data:
     redis:
       host: localhost
@@ -6,7 +11,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
   application:
     name: smartApi
   ai:
