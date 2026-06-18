@@ -15,7 +15,7 @@ public class TokenStore {
     private static final String REFRESH_PREFIX = "refreshToken:";
 
 
-    void saveToken(Long chatId, String token, Duration ttl) {
+    public void saveToken(Long chatId, String token, Duration ttl) {
         redis.opsForValue().set(TOKEN_PREFIX + chatId, token, ttl);
     }
 
@@ -27,7 +27,7 @@ public class TokenStore {
         return redis.opsForValue().get(TOKEN_PREFIX + chatId);
     }
 
-    public String getRefreshToken(Long chatId) {
+    public String getRefreshTokenByChatId(Long chatId) {
         return redis.opsForValue().get(REFRESH_PREFIX + chatId);
     }
 

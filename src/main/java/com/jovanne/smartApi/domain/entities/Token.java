@@ -1,4 +1,4 @@
 package com.jovanne.smartApi.domain.entities;
 
-public record Token(String accessToken, int expiresIn, UserToken token) {
+public record Token(String accessToken, String refreshToken, int expiresIn, UserToken token) {
 }

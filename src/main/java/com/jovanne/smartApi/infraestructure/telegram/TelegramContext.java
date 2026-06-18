@@ -1,4 +1,4 @@
-package com.jovanne.smartApi.infraestructure;
+package com.jovanne.smartApi.infraestructure.telegram;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
@@ -8,8 +8,8 @@ import org.springframework.web.context.annotation.RequestScope;
 public class TelegramContext {
     private Long chatId;
 
-    private void setChatId(Long chatId) { this.chatId = chatId; }
+    public void setChatId(Long chatId) { this.chatId = chatId; }
 
-    private Long getChatId() { return chatId; }
+    public Long getChatId() { return chatId; }
 
 }

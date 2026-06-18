@@ -1,6 +1,7 @@
 package com.jovanne.smartApi.infraestructure.http.clients;
 
 import com.jovanne.smartApi.infraestructure.config.ApiClientConfig;
+import com.jovanne.smartApi.infraestructure.config.FinanceClientConfig;
 import com.jovanne.smartApi.infraestructure.http.request.TransactionRequest;
 import com.jovanne.smartApi.infraestructure.http.response.TransactionResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -14,7 +15,10 @@ import java.util.List;
 @FeignClient(
         name = "Finance",
         url = "${api.financeira.url}",
-        configuration = ApiClientConfig.class
+        configuration = {
+                FinanceClientConfig.class,
+                ApiClientConfig.class
+        }
 )
 public interface IFinanceClient {
 
