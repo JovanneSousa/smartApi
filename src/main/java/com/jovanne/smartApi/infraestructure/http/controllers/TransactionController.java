@@ -1,7 +1,10 @@
 package com.jovanne.smartApi.infraestructure.http.controllers;
 
+import com.jovanne.smartApi.application.dtos.LoginDTO;
 import com.jovanne.smartApi.application.tool.ToolResultHolder;
+import com.jovanne.smartApi.domain.interfaces.IAuthService;
 import com.jovanne.smartApi.domain.interfaces.ITransactionService;
+import com.jovanne.smartApi.infraestructure.http.response.ApiResponse;
 import com.jovanne.smartApi.infraestructure.http.response.ErrorResponse;
 import org.springframework.ai.audio.transcription.TranscriptionModel;
 import org.springframework.ai.chat.client.ChatClient;
@@ -17,12 +20,13 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/transactions")
 public class TransactionController {
-    private final ITransactionService transactionService;
     private final ChatClient chatClient;
 
     @Autowired
@@ -30,12 +34,14 @@ public class TransactionController {
     @Autowired
     ToolResultHolder holder;
 
+    @Autowired
+    IAuthService authService;
+
     public TransactionController(
             ITransactionService transactionService,
             ChatClient.Builder builder,
             @Value("classpath:/prompts/system.st") Resource systemPrompt
     ) throws IOException {
-        this.transactionService = transactionService;
         this.chatClient = builder
                 .defaultTools(transactionService)
                 .defaultSystem(systemPrompt.getContentAsString(Charset.defaultCharset()))
@@ -68,5 +74,20 @@ public class TransactionController {
 
         return ResponseEntity.created(URI.create("/transactions"))
                 .body(result.toString());
+    }
+
+    @PostMapping(value = "/login")
+    ResponseEntity<?> executaLogin(@RequestBody LoginDTO login) {
+        var result = authService.executeLogin(login);
+
+        var token = new HashMap<String, String>();
+        token.put("token", result);
+        return  ResponseEntity.ok()
+                .body(
+                        new ApiResponse<HashMap<String, String>>(
+                                true,
+                                token
+                        )
+                );
     }
 }

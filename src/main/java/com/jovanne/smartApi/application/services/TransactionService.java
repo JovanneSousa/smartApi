@@ -4,7 +4,7 @@ import com.jovanne.smartApi.application.tool.ToolResult;
 import com.jovanne.smartApi.application.dtos.TransactionAiDTO;
 import com.jovanne.smartApi.application.tool.ToolResultHolder;
 import com.jovanne.smartApi.domain.interfaces.ITransactionService;
-import com.jovanne.smartApi.domain.exceptions.financeApiExceptions.FinanceClientException;
+import com.jovanne.smartApi.domain.exceptions.ApiClientException;
 import com.jovanne.smartApi.infraestructure.http.request.TransactionRequest;
 import com.jovanne.smartApi.infraestructure.http.response.TransactionResponse;
 import com.jovanne.smartApi.infraestructure.http.clients.IFinanceClient;
@@ -33,12 +33,12 @@ public class TransactionService implements ITransactionService {
             );
             return holderResult.get();
 
-        } catch (FinanceClientException ex) {
+        } catch (ApiClientException ex) {
             return returnsError(ex);
         }
     }
 
-    private ToolResult returnsError(FinanceClientException ex) {
+    private ToolResult returnsError(ApiClientException ex) {
         String message = ex.getCause() != null ?
                 ex.getCause().getMessage() :
                 ex.getMessage();

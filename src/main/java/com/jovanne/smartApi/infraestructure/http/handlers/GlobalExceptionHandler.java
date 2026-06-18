@@ -1,6 +1,6 @@
 package com.jovanne.smartApi.infraestructure.http.handlers;
 
-import com.jovanne.smartApi.domain.exceptions.financeApiExceptions.FinanceClientException;
+import com.jovanne.smartApi.domain.exceptions.ApiClientException;
 import com.jovanne.smartApi.infraestructure.http.response.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,16 +11,10 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(FinanceClientException.class)
-    public ResponseEntity<ErrorResponse> handleFinancieroError(FinanceClientException ex){
+    @ExceptionHandler(ApiClientException.class)
+    public ResponseEntity<ErrorResponse> handleApiClientError(ApiClientException ex){
         return ResponseEntity
                 .status(ex.getStatusCode())
-                .body(
-                        new ErrorResponse(
-                                ex.getStatusCode(),
-                                ex.getMessage(),
-                                ex.getErrorResponse() != null ? ex.getErrorResponse().errors() : List.of()
-                        )
-                );
+                .body(ErrorResponse.fromApiExcetipn(ex));
     }
 }

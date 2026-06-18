@@ -1,0 +1,9 @@
+package com.jovanne.smartApi.domain.exceptions;
+
+import com.jovanne.smartApi.infraestructure.http.response.ApiErrorResponse;
+
+public class ApiUnauthorizedException extends ApiClientException {
+    public ApiUnauthorizedException(ApiErrorResponse errorResponse) {
+        super(401, "Não autorizado no serviço externo", errorResponse);
+    }
+}
