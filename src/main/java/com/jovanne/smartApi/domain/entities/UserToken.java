@@ -6,11 +6,9 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Getter
-@Setter
-@AllArgsConstructor
-public class UserToken {
-    private String id;
-    private String name;
-    private List<Claim> claims;
+public record UserToken(String id, String name) {
+    public boolean isValid() {
+        return id != null &&
+                name != null;
+    }
 }

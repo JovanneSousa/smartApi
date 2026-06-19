@@ -1,7 +1,7 @@
-package com.jovanne.smartApi.infraestructure.http.response;
+package com.jovanne.smartApi.infraestructure.http.response.external;
 
 import com.jovanne.smartApi.application.tool.ToolResultHolder;
-import com.jovanne.smartApi.domain.exceptions.ApiClientException;
+import com.jovanne.smartApi.domain.exceptions.apiExceptions.ApiClientException;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ public record ErrorResponse(
         int status,
         String message,
         List<String> errors
-) {
+) implements BaseResponse {
     public static ErrorResponse fromToolResultHolder(ToolResultHolder holder) {
         return new ErrorResponse(
                 holder.get().statusCode(),
@@ -26,5 +26,10 @@ public record ErrorResponse(
                         ex.getErrorResponse().errors() :
                         List.of()
         );
+    }
+
+    @Override
+    public boolean isValid() {
+        return message != null && errors != null;
     }
 }

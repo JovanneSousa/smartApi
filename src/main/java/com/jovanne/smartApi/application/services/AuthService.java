@@ -1,14 +1,14 @@
 package com.jovanne.smartApi.application.services;
 
-import com.google.genai.errors.ApiException;
 import com.jovanne.smartApi.application.dtos.LoginDTO;
-import com.jovanne.smartApi.application.dtos.TokenDTO;
+import com.jovanne.smartApi.application.dtos.UserDataDTO;
 import com.jovanne.smartApi.domain.entities.RennovationResult;
+import com.jovanne.smartApi.domain.exceptions.apiExceptions.ApiBadRequestException;
 import com.jovanne.smartApi.domain.interfaces.IAuthService;
 import com.jovanne.smartApi.domain.interfaces.IUserRepository;
 import com.jovanne.smartApi.infraestructure.http.request.RefreshTokenRequest;
-import com.jovanne.smartApi.infraestructure.http.response.ApiResponse;
-import com.jovanne.smartApi.infraestructure.http.response.LoginResponse;
+import com.jovanne.smartApi.infraestructure.http.response.external.ExternalApiResponse;
+import com.jovanne.smartApi.infraestructure.http.response.external.LoginResponse;
 import com.jovanne.smartApi.infraestructure.persistense.entities.TelegramUser;
 import com.jovanne.smartApi.infraestructure.redis.TokenStore;
 import com.jovanne.smartApi.infraestructure.http.clients.IAuthClient;
@@ -36,43 +36,33 @@ public class AuthService implements IAuthService {
 
     @Override
     @Tool(name = "execute-login", description = "Realiza login na aplicação de autenticação e retorna o token")
-    public String executeLogin(LoginDTO login) {
-        var request = LoginRequest.fromDTO(login);
-        String token = null;
+    public void executeLogin(LoginDTO requestDto) {
+        var response = authClient.executeLogin(LoginRequest.fromDTO(requestDto));
 
-        var response = authClient.executeLogin(request);
-        if(response != null && response.data() != null && response.success() && response.data().token() != null)
-            token = response.data().token().accessToken();
+        var userData = extractUserDataFromResponse(response);
 
-        return token != null ?
-                token :
-                new String();
-    }
+        saveTokens(requestDto.chatId(), userData.jwt(), userData.refreshToken());
 
-    public void executeLogin(Long chatId, String login, String password) {
-        var response = authClient.executeLogin(new LoginRequest(login, password, "fin"));
-        var tokens = extractTokensFromResponse(response);
-        saveTokens(chatId, tokens.jwt(), tokens.refreshToken());
-        repository.save(new TelegramUser());
+        var telUser = new TelegramUser();
+        telUser.setChatId(requestDto.chatId());
+        telUser.setLogin(userData.email());
+
+        repository.save(telUser);
     }
 
     public RennovationResult refreshToken(Long chatId) {
         String refreshToken = tokenStore.getRefreshTokenByChatId(chatId);
-        if( refreshToken == null) return RennovationResult.LOGIN_REQUIRED;
+        if( refreshToken == null ) return RennovationResult.LOGIN_REQUIRED;
 
         var request = new RefreshTokenRequest(
                 UUID.fromString(refreshToken),
                 "fin"
         );
-        try {
-            var response = authClient.refreshToken(request);
-            if (response == null && !response.isValid())
-                return RennovationResult.LOGIN_REQUIRED;
-            tokenStore.saveRefreshToken(chatId, response.data(), REFRESH_TTL);
-            return RennovationResult.SUCCESS;
-        } catch (ApiException ex) {
+        var response = authClient.refreshToken(request);
+        if (response == null || !response.isValid())
             return RennovationResult.LOGIN_REQUIRED;
-        }
+        tokenStore.saveToken(chatId, response.data().token(), TOKEN_TTL);
+        return RennovationResult.SUCCESS;
     }
 
     private void saveTokens(Long chatId, String token, String refreshToken) {
@@ -80,13 +70,14 @@ public class AuthService implements IAuthService {
         tokenStore.saveRefreshToken(chatId, refreshToken, REFRESH_TTL);
     }
 
-    private TokenDTO extractTokensFromResponse(ApiResponse<LoginResponse> response) {
+    private UserDataDTO extractUserDataFromResponse(ExternalApiResponse<LoginResponse> response) {
         if (!response.isValid())
-            return null;
+            throw new ApiBadRequestException("Falha ao extrair dados de resposta do serviço externo");
 
-        return new TokenDTO(
+        return new UserDataDTO(
                 response.data().token().accessToken(),
-                response.data().token().refreshToken()
+                response.data().token().refreshToken(),
+                response.data().token().userToken().name()
         );
     }
 }

@@ -1,24 +1,25 @@
 package com.jovanne.smartApi.application.services;
 
-import com.jovanne.smartApi.application.dtos.LoginDTO;
 import com.jovanne.smartApi.application.tool.ToolResult;
 import com.jovanne.smartApi.application.dtos.TransactionAiDTO;
 import com.jovanne.smartApi.application.tool.ToolResultHolder;
 import com.jovanne.smartApi.domain.entities.RennovationResult;
-import com.jovanne.smartApi.domain.exceptions.ApiUnauthorizedException;
+import com.jovanne.smartApi.domain.exceptions.apiExceptions.ApiBadRequestException;
+import com.jovanne.smartApi.domain.exceptions.apiExceptions.ApiUnauthorizedException;
 import com.jovanne.smartApi.domain.interfaces.IAuthService;
 import com.jovanne.smartApi.domain.interfaces.ITransactionService;
-import com.jovanne.smartApi.domain.exceptions.ApiClientException;
+import com.jovanne.smartApi.domain.exceptions.apiExceptions.ApiClientException;
 import com.jovanne.smartApi.infraestructure.http.request.TransactionRequest;
-import com.jovanne.smartApi.infraestructure.http.response.TransactionResponse;
+import com.jovanne.smartApi.infraestructure.http.response.external.TransactionResponse;
 import com.jovanne.smartApi.infraestructure.http.clients.IFinanceClient;
-import com.jovanne.smartApi.infraestructure.redis.TokenStore;
+import com.jovanne.smartApi.infraestructure.telegram.TelegramContext;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -32,7 +33,7 @@ public class TransactionService implements ITransactionService {
     IAuthService authService;
 
     @Autowired
-    TokenStore tokenStore;
+    TelegramContext telegramContext;
 
     @Value("${api.auth.login}")
     private String userDemo;
@@ -45,15 +46,14 @@ public class TransactionService implements ITransactionService {
     public ToolResult registerTransaction(TransactionAiDTO dtoAi) {
         var request = TransactionRequest.fromAi(dtoAi);
         var chatId = 1l;
-        var token = tokenStore.getToken(chatId);
+        telegramContext.setChatId(chatId);
 
         try {
-
-            return executeCreateTransaction(request, token);
+            return executeCreateTransaction(request);
         } catch (ApiUnauthorizedException ex) {
             RennovationResult refreshed = authService.refreshToken(chatId);
             if(refreshed == RennovationResult.SUCCESS) {
-                return executeCreateTransaction(request, token);
+                return executeCreateTransaction(request);
             }
             return returnsError(ex);
         } catch (ApiClientException ex) {
@@ -61,18 +61,19 @@ public class TransactionService implements ITransactionService {
         }
     }
 
-    private ToolResult executeCreateTransaction(TransactionRequest request, String token) {
-        var result = financeClient.createTransaction(request, token);
+    private ToolResult executeCreateTransaction(TransactionRequest request) {
+        var response = financeClient.createTransaction(request);
+        if (!response.isValid())
+            throw new ApiBadRequestException("Dados inválidos retornados do serviço externo");
+
         holderResult.set(
-                ToolResult.ok(201,"Transação registrada com sucesso! ID: " + result.id())
+                ToolResult.ok(201,"Transação registrada com sucesso! ID: " + response.data().id())
         );
         return holderResult.get();
     }
 
     private ToolResult returnsError(ApiClientException ex) {
-        String message = ex.getCause() != null ?
-                ex.getCause().getMessage() :
-                ex.getMessage();
+        String message = ex.getMessage();
         holderResult.set(
                 ToolResult.error(ex.getStatusCode(), message, ex.getListOfErrors())
         );

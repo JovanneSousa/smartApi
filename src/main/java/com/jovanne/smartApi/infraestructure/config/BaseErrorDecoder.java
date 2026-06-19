@@ -2,11 +2,8 @@ package com.jovanne.smartApi.infraestructure.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jovanne.smartApi.infraestructure.http.response.ApiErrorResponse;
-import com.jovanne.smartApi.infraestructure.http.response.ErrorResponse;
 import feign.Response;
-import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 

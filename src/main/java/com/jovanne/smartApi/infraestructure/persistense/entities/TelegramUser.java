@@ -1,14 +1,18 @@
 package com.jovanne.smartApi.infraestructure.persistense.entities;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "telegram_users")
+@Data
 public class TelegramUser {
     @Id
-    private String id;
+    @GeneratedValue()
+    private UUID id;
 
     @Column(unique = true, nullable = false)
     private Long chatId;
@@ -20,7 +24,7 @@ public class TelegramUser {
     private LocalDateTime createdAt;
 
     @PrePersist
-    public void prePersist(){
+    private void prePersist(){
         this.createdAt = LocalDateTime.now();
     }
 }

@@ -1,6 +1,6 @@
 package com.jovanne.smartApi.infraestructure.config;
 
-import com.jovanne.smartApi.domain.exceptions.*;
+import com.jovanne.smartApi.domain.exceptions.apiExceptions.*;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import org.springframework.stereotype.Component;

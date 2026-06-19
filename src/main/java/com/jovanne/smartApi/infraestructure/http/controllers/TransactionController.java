@@ -4,8 +4,9 @@ import com.jovanne.smartApi.application.dtos.LoginDTO;
 import com.jovanne.smartApi.application.tool.ToolResultHolder;
 import com.jovanne.smartApi.domain.interfaces.IAuthService;
 import com.jovanne.smartApi.domain.interfaces.ITransactionService;
-import com.jovanne.smartApi.infraestructure.http.response.ApiResponse;
-import com.jovanne.smartApi.infraestructure.http.response.ErrorResponse;
+import com.jovanne.smartApi.infraestructure.http.response.external.ErrorResponse;
+import com.jovanne.smartApi.infraestructure.http.response.internal.InternalApiResponse;
+import com.jovanne.smartApi.infraestructure.redis.TokenStore;
 import org.springframework.ai.audio.transcription.TranscriptionModel;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,6 @@ import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/transactions")
@@ -36,6 +35,9 @@ public class TransactionController {
 
     @Autowired
     IAuthService authService;
+
+    @Autowired
+    TokenStore tokenStore;
 
     public TransactionController(
             ITransactionService transactionService,
@@ -56,7 +58,7 @@ public class TransactionController {
 //    }
 
     @PostMapping(value = "/ai", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<?> trancribe (@RequestParam("file") MultipartFile file) {
+    ResponseEntity<?> trancribe (@RequestParam("file") MultipartFile file, @RequestParam Long chatId) {
         String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
         var resoure = file.getResource();
         var userMessage = transcriptionModel.transcribe(resoure);
@@ -78,13 +80,16 @@ public class TransactionController {
 
     @PostMapping(value = "/login")
     ResponseEntity<?> executaLogin(@RequestBody LoginDTO login) {
-        var result = authService.executeLogin(login);
+        authService.executeLogin(login);
+
+        var result = tokenStore.getToken(login.chatId());
 
         var token = new HashMap<String, String>();
         token.put("token", result);
+
         return  ResponseEntity.ok()
                 .body(
-                        new ApiResponse<HashMap<String, String>>(
+                        new InternalApiResponse<HashMap<String, String>>(
                                 true,
                                 token
                         )

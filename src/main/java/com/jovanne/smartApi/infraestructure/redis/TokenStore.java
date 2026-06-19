@@ -2,14 +2,19 @@ package com.jovanne.smartApi.infraestructure.redis;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
 @Component
 public class TokenStore {
-    @Autowired
-    RedisTemplate<String, String> redis;
+
+    private final StringRedisTemplate redis;
+
+    public TokenStore(StringRedisTemplate redis) {
+        this.redis = redis;
+    }
 
     private static final String TOKEN_PREFIX = "token:";
     private static final String REFRESH_PREFIX = "refreshToken:";

@@ -1,4 +1,4 @@
-package com.jovanne.smartApi.domain.exceptions;
+package com.jovanne.smartApi.domain.exceptions.apiExceptions;
 
 import com.jovanne.smartApi.infraestructure.http.response.ApiErrorResponse;
 

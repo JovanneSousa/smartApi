@@ -1,4 +1,17 @@
 services:
+  database-cache:
+    image: redis:8.6.4
+    command: redis-server --requirepass minhaSenha
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - token_cache_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "minhaSenha", "ping" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
   database:
     image: postgres:17
     environment:
@@ -8,11 +21,12 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - transaction_data:/var/lib/postgresql/data
+      - user_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
 volumes:
-  transaction_data:
+  user_data:
+  token_cache_data:
