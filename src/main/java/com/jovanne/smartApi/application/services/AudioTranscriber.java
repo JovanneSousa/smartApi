@@ -23,7 +23,7 @@ public class AudioTranscriber implements TranscriptionModel {
 
     @Override
     public AudioTranscriptionResponse call(AudioTranscriptionPrompt audioTranscriptionPrompt) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("erro");
     }
 
     @Override

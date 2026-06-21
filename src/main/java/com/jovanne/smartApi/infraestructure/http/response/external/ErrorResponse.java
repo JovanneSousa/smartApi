@@ -3,6 +3,8 @@ package com.jovanne.smartApi.infraestructure.http.response.external;
 import com.jovanne.smartApi.application.tool.ToolResultHolder;
 import com.jovanne.smartApi.domain.exceptions.apiExceptions.ApiClientException;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 public record ErrorResponse(
@@ -10,11 +12,13 @@ public record ErrorResponse(
         String message,
         List<String> errors
 ) implements BaseResponse {
-    public static ErrorResponse fromToolResultHolder(ToolResultHolder holder) {
+    public static ErrorResponse fromToolResultHolder(ToolResultHolder holder, String chatError) {
+        var errors = new ArrayList<String>(holder.get().errors());
+        errors.add(chatError);
         return new ErrorResponse(
                 holder.get().statusCode(),
                 holder.get().message(),
-                holder.get().errors()
+                errors
         );
     }
 

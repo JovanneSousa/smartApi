@@ -48,28 +48,32 @@ public class TransactionService implements ITransactionService {
         var chatId = 1l;
         telegramContext.setChatId(chatId);
 
+        return executeCreateTransaction(request, true);
+    }
+
+    private ToolResult executeCreateTransaction(TransactionRequest request, boolean retry) {
         try {
-            return executeCreateTransaction(request);
+            var response = financeClient.createTransaction(request);
+            if (!response.isValid()) {
+                return ToolResult.error(400, "Falha ao capturar dados de retorno do serviço externo", List.of());
+            }
+            holderResult.set(
+                    ToolResult.ok(201, "Transação registrada com sucesso! ID: " + response.data().id())
+            );
+
+            return holderResult.get();
+
         } catch (ApiUnauthorizedException ex) {
-            RennovationResult refreshed = authService.refreshToken(chatId);
-            if(refreshed == RennovationResult.SUCCESS) {
-                return executeCreateTransaction(request);
+            if (retry) {
+                var refreshed = authService.refreshToken(1L);
+                if(refreshed == RennovationResult.SUCCESS) {
+                    return executeCreateTransaction(request, false);
+                }
             }
             return returnsError(ex);
         } catch (ApiClientException ex) {
             return returnsError(ex);
         }
-    }
-
-    private ToolResult executeCreateTransaction(TransactionRequest request) {
-        var response = financeClient.createTransaction(request);
-        if (!response.isValid())
-            throw new ApiBadRequestException("Dados inválidos retornados do serviço externo");
-
-        holderResult.set(
-                ToolResult.ok(201,"Transação registrada com sucesso! ID: " + response.data().id())
-        );
-        return holderResult.get();
     }
 
     private ToolResult returnsError(ApiClientException ex) {

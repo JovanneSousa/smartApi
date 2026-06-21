@@ -2,20 +2,20 @@ spring:
   docker:
     compose:
       enabled: false
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    port: 5432
-    username: postgres
-    password: postgres
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/postgres
+#    port: 5432
+#    username: postgres
+#    password: postgres
   data:
     redis:
-      host: 127.0.0.1
+      host: localhost
       port: 6379
       password: minhaSenha
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
   application:
     name: smartApi
   ai:

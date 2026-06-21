@@ -5,11 +5,9 @@ import com.jovanne.smartApi.application.dtos.UserDataDTO;
 import com.jovanne.smartApi.domain.entities.RennovationResult;
 import com.jovanne.smartApi.domain.exceptions.apiExceptions.ApiBadRequestException;
 import com.jovanne.smartApi.domain.interfaces.IAuthService;
-import com.jovanne.smartApi.domain.interfaces.IUserRepository;
 import com.jovanne.smartApi.infraestructure.http.request.RefreshTokenRequest;
 import com.jovanne.smartApi.infraestructure.http.response.external.ExternalApiResponse;
 import com.jovanne.smartApi.infraestructure.http.response.external.LoginResponse;
-import com.jovanne.smartApi.infraestructure.persistense.entities.TelegramUser;
 import com.jovanne.smartApi.infraestructure.redis.TokenStore;
 import com.jovanne.smartApi.infraestructure.http.clients.IAuthClient;
 import com.jovanne.smartApi.infraestructure.http.request.LoginRequest;
@@ -28,9 +26,6 @@ public class AuthService implements IAuthService {
     @Autowired
     TokenStore tokenStore;
 
-    @Autowired
-    IUserRepository repository;
-
     private static final Duration TOKEN_TTL   = Duration.ofHours(8);
     private static final Duration REFRESH_TTL = Duration.ofDays(7);
 
@@ -42,12 +37,6 @@ public class AuthService implements IAuthService {
         var userData = extractUserDataFromResponse(response);
 
         saveTokens(requestDto.chatId(), userData.jwt(), userData.refreshToken());
-
-        var telUser = new TelegramUser();
-        telUser.setChatId(requestDto.chatId());
-        telUser.setLogin(userData.email());
-
-        repository.save(telUser);
     }
 
     public RennovationResult refreshToken(Long chatId) {

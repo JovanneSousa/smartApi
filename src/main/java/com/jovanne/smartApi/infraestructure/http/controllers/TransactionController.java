@@ -71,11 +71,11 @@ public class TransactionController {
         if(!holder.get().success()) {
             return ResponseEntity
                     .status(holder.get().statusCode())
-                    .body(ErrorResponse.fromToolResultHolder(holder));
+                    .body(ErrorResponse.fromToolResultHolder(holder, result));
         }
 
         return ResponseEntity.created(URI.create("/transactions"))
-                .body(result.toString());
+                .body(result);
     }
 
     @PostMapping(value = "/login")

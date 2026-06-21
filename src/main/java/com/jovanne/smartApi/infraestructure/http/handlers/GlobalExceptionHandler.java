@@ -23,11 +23,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAnyException(Exception ex){
-        var errorMessage = ex.getMessage();
+        var errorMessage = ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage();
         var body = new ErrorResponse(
                 500,
                 "Erro interno no servidor",
-                List.of(errorMessage)
+                List.of(errorMessage != null ? errorMessage : "")
         );
 
         // apenas para depurar momentaneamente
