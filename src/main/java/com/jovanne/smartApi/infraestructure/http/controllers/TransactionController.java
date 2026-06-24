@@ -1,15 +1,16 @@
 package com.jovanne.smartApi.infraestructure.http.controllers;
 
+import com.jovanne.smartApi.application.dtos.CategoryDTO;
 import com.jovanne.smartApi.application.dtos.LoginDTO;
 import com.jovanne.smartApi.application.tool.ToolResultHolder;
 import com.jovanne.smartApi.domain.interfaces.IAuthService;
 import com.jovanne.smartApi.domain.interfaces.ITransactionService;
-import com.jovanne.smartApi.infraestructure.http.response.external.ErrorResponse;
+import com.jovanne.smartApi.infraestructure.http.response.internal.ErrorResponse;
+import com.jovanne.smartApi.infraestructure.http.response.internal.InternalAiApiResponse;
 import com.jovanne.smartApi.infraestructure.http.response.internal.InternalApiResponse;
-import com.jovanne.smartApi.infraestructure.redis.TokenStore;
+import com.jovanne.smartApi.infraestructure.data.TokenStore;
 import org.springframework.ai.audio.transcription.TranscriptionModel;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
@@ -27,43 +28,42 @@ import java.util.HashMap;
 @RequestMapping("/transactions")
 public class TransactionController {
     private final ChatClient chatClient;
-
-    @Autowired
-    TranscriptionModel transcriptionModel;
-    @Autowired
-    ToolResultHolder holder;
-
-    @Autowired
-    IAuthService authService;
-
-    @Autowired
-    TokenStore tokenStore;
-
+    private final TranscriptionModel transcriptionModel;
+    private final ToolResultHolder holder;
+    private final TokenStore tokenStore;
+    private final ITransactionService transactionService;
+    private final IAuthService authService;
     public TransactionController(
+            TranscriptionModel transcriptionModel,
+            ToolResultHolder holder,
+            TokenStore tokenStore,
+            IAuthService authService,
             ITransactionService transactionService,
             ChatClient.Builder builder,
             @Value("classpath:/prompts/system.st") Resource systemPrompt
     ) throws IOException {
+        this.transactionService = transactionService;
+        this.authService = authService;
+        this.holder = holder;
+        this.tokenStore = tokenStore;
+        this.transcriptionModel = transcriptionModel;
         this.chatClient = builder
                 .defaultTools(transactionService)
                 .defaultSystem(systemPrompt.getContentAsString(Charset.defaultCharset()))
                 .build();
     }
-//
-//    @PostMapping
-//    ResponseEntity<TransactionResponse> createTransaction(@RequestBody TransactionAiDTO request) {
-//        var transaction = transactionService.registerTransaction(request);
-//        return ResponseEntity.created(URI.create("/transactions/" + transaction.id()))
-//                .body(transaction);
-//    }
 
     @PostMapping(value = "/ai", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<?> trancribe (@RequestParam("file") MultipartFile file, @RequestParam Long chatId) {
+    ResponseEntity<?> createTransaction(@RequestParam("file") MultipartFile file, @RequestParam Long chatId) {
+        var categories = transactionService.listCategories();
         String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
         var resoure = file.getResource();
         var userMessage = transcriptionModel.transcribe(resoure);
+
         var result = chatClient.prompt()
-                .system(s -> s.param("currentDateTime", currentDateTime))
+                .system(s -> s
+                                .param("currentDateTime", currentDateTime)
+                                .param("categories", CategoryDTO.formatSystemPrompt(categories)))
                 .user(userMessage)
                 .call()
                 .content();
@@ -75,13 +75,12 @@ public class TransactionController {
         }
 
         return ResponseEntity.created(URI.create("/transactions"))
-                .body(result);
+                .body(InternalAiApiResponse.fromToolResult(holder.get(), result));
     }
 
     @PostMapping(value = "/login")
     ResponseEntity<?> executaLogin(@RequestBody LoginDTO login) {
         authService.executeLogin(login);
-
         var result = tokenStore.getToken(login.chatId());
 
         var token = new HashMap<String, String>();

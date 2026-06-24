@@ -1,4 +1,4 @@
-package com.jovanne.smartApi.infraestructure.http.response;
+package com.jovanne.smartApi.infraestructure.http.response.external;
 
 import java.util.List;
 

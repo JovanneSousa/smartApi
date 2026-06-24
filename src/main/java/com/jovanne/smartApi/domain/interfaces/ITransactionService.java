@@ -1,5 +1,6 @@
 package com.jovanne.smartApi.domain.interfaces;
 
+import com.jovanne.smartApi.application.dtos.CategoryDTO;
 import com.jovanne.smartApi.application.tool.ToolResult;
 import com.jovanne.smartApi.application.dtos.TransactionAiDTO;
 import com.jovanne.smartApi.infraestructure.http.response.external.TransactionResponse;
@@ -10,4 +11,6 @@ public interface ITransactionService {
     ToolResult registerTransaction(TransactionAiDTO request);
 
     List<TransactionResponse> listTransactionsByPeriod();
+
+    List<CategoryDTO> listCategories();
 }

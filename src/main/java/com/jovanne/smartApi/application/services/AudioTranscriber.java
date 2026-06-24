@@ -4,6 +4,7 @@ import org.springframework.ai.audio.transcription.AudioTranscriptionOptions;
 import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
 import org.springframework.ai.audio.transcription.AudioTranscriptionResponse;
 import org.springframework.ai.audio.transcription.TranscriptionModel;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,12 @@ import java.util.stream.Collectors;
 @Service
 public class AudioTranscriber implements TranscriptionModel {
 
+    @Value("${api.scriptPath}")
+    private String scriptPath;
+
     @Override
     public AudioTranscriptionResponse call(AudioTranscriptionPrompt audioTranscriptionPrompt) {
-        throw new UnsupportedOperationException("erro");
+        throw new UnsupportedOperationException("Método não implementado");
     }
 
     @Override
@@ -41,10 +45,9 @@ public class AudioTranscriber implements TranscriptionModel {
     }
 
     private String executeScript(Path audioPath) throws IOException, InterruptedException {
-        String script = "C:/dev/backend/python/transcription/transcribe.py";
         Process process = new ProcessBuilder(
                 "python",
-                script,
+                scriptPath,
                 audioPath.toAbsolutePath().toString()
         ).start();
 

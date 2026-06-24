@@ -1,6 +1,6 @@
 package com.jovanne.smartApi.infraestructure.config;
 
-import com.jovanne.smartApi.infraestructure.redis.TokenStore;
+import com.jovanne.smartApi.infraestructure.data.TokenStore;
 import com.jovanne.smartApi.infraestructure.telegram.TelegramContext;
 import feign.RequestInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;

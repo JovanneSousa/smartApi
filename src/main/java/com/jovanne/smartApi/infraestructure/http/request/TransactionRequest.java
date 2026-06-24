@@ -1,5 +1,6 @@
 package com.jovanne.smartApi.infraestructure.http.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jovanne.smartApi.application.dtos.TransactionAiDTO;
 import com.jovanne.smartApi.domain.entities.Category;
 import com.jovanne.smartApi.domain.entities.TransacaoType;
@@ -9,12 +10,12 @@ import java.time.LocalDateTime;
 
 public record TransactionRequest(
         String id,
-        String userId ,
+        @JsonFormat(shape = JsonFormat.Shape.NUMBER)
         TransacaoType type,
-        String titulo,
-        BigDecimal valor,
-        Category category,
-        LocalDateTime dataMovimentacao,
+        String description,
+        BigDecimal amount,
+        String categoryId,
+        LocalDateTime transactionDate,
         boolean isRecurring,
         Integer parcelas,
         Integer parcelaAtual
@@ -22,11 +23,10 @@ public record TransactionRequest(
     public static TransactionRequest fromAi(TransactionAiDTO ai) {
         return new TransactionRequest(
                 null,
-                null,
                 ai.type(),
                 ai.titulo(),
                 ai.valor(),
-                ai.category(),
+                ai.categoriaId(),
                 ai.dataMovimentacao(),
                 ai.isRecurring(),
                 ai.parcelas(),
@@ -37,12 +37,11 @@ public record TransactionRequest(
     @Override
     public String toString() {
         return "TransacaoRequest{" +
-                "userId='" + userId + '\'' +
                 ", type=" + type +
-                ", titulo='" + titulo + '\'' +
-                ", valor=" + valor +
-                ", categoriaId='" + category + '\'' +
-                ", dataMovimentacao=" + dataMovimentacao +
+                ", titulo='" + description + '\'' +
+                ", valor=" + amount +
+                ", categoriaId='" + categoryId + '\'' +
+                ", dataMovimentacao=" + transactionDate +
                 ", isRecurring=" + isRecurring +
                 ", parcelas=" + parcelas +
                 ", parcelaAtual=" + parcelaAtual +

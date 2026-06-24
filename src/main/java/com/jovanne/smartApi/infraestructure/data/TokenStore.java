@@ -1,14 +1,14 @@
-package com.jovanne.smartApi.infraestructure.redis;
+package com.jovanne.smartApi.infraestructure.data;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.jovanne.smartApi.domain.interfaces.ITokenService;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
-@Component
-public class TokenStore {
+@Service
+public class TokenStore implements ITokenService {
 
     private final StringRedisTemplate redis;
 
@@ -19,13 +19,16 @@ public class TokenStore {
     private static final String TOKEN_PREFIX = "token:";
     private static final String REFRESH_PREFIX = "refreshToken:";
 
+    private static final Duration TOKEN_TTL = Duration.ofMinutes(15);
+    private static final Duration REFRESH_TTL = Duration.ofDays(8);
 
-    public void saveToken(Long chatId, String token, Duration ttl) {
-        redis.opsForValue().set(TOKEN_PREFIX + chatId, token, ttl);
+
+    public void saveToken(Long chatId, String token) {
+        redis.opsForValue().set(TOKEN_PREFIX + chatId, token, TOKEN_TTL);
     }
 
-    public void saveRefreshToken(Long chatId, String refreshToken, Duration ttl) {
-        redis.opsForValue().set(REFRESH_PREFIX + chatId, refreshToken, ttl);
+    public void saveRefreshToken(Long chatId, String refreshToken) {
+        redis.opsForValue().set(REFRESH_PREFIX + chatId, refreshToken, REFRESH_TTL);
     }
 
     public String getToken(Long chatId) {

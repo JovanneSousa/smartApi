@@ -1,6 +1,6 @@
 package com.jovanne.smartApi.redis;
 
-import com.jovanne.smartApi.infraestructure.redis.TokenStore;
+import com.jovanne.smartApi.infraestructure.data.TokenStore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +29,7 @@ public class TokenStoreIT {
     @Test
     public void should_SaveAndGetToken() {
         Long chatId = 123456L;
-        tokenStore.saveToken(chatId, "Token-Teste", Duration.ofMinutes(2));
+        tokenStore.saveToken(chatId, "Token-Teste");
 
         var result = tokenStore.getToken(chatId);
 

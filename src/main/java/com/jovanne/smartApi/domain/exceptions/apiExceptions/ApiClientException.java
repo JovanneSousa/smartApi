@@ -1,6 +1,6 @@
 package com.jovanne.smartApi.domain.exceptions.apiExceptions;
 
-import com.jovanne.smartApi.infraestructure.http.response.ApiErrorResponse;
+import com.jovanne.smartApi.infraestructure.http.response.external.ApiErrorResponse;
 
 import java.util.List;
 

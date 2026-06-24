@@ -1,6 +1,5 @@
 package com.jovanne.smartApi.application.dtos;
 
-import com.jovanne.smartApi.domain.entities.Category;
 import com.jovanne.smartApi.domain.entities.TransacaoType;
 
 import java.math.BigDecimal;
@@ -10,7 +9,7 @@ public record TransactionAiDTO(
         TransacaoType type,
         String titulo,
         BigDecimal valor,
-        Category category,
+        String categoriaId,
         LocalDateTime dataMovimentacao,
         boolean isRecurring,
         Integer parcelas,

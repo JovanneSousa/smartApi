@@ -1,7 +1,7 @@
 package com.jovanne.smartApi.infraestructure.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jovanne.smartApi.infraestructure.http.response.ApiErrorResponse;
+import com.jovanne.smartApi.infraestructure.http.response.external.ApiErrorResponse;
 import feign.Response;
 
 import java.nio.charset.StandardCharsets;
@@ -17,13 +17,14 @@ public abstract class BaseErrorDecoder {
     protected ApiErrorResponse extractBody(Response response) {
         try {
             if (response.body() == null) return voidError();
+
             String json = new String(
                     response.body().asInputStream().readAllBytes(),
                     StandardCharsets.UTF_8
             );
 
             return mapper.readValue(json, ApiErrorResponse.class);
-        } catch (Exception ex) {
+        } catch (Exception _) {
             return voidError();
         }
     }

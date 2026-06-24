@@ -1,9 +1,7 @@
 package com.jovanne.smartApi.infraestructure.http.handlers;
 
 import com.jovanne.smartApi.domain.exceptions.apiExceptions.ApiClientException;
-import com.jovanne.smartApi.infraestructure.http.response.external.ErrorResponse;
-import com.jovanne.smartApi.infraestructure.http.response.external.ExternalApiResponse;
-import com.jovanne.smartApi.infraestructure.http.response.internal.InternalApiResponse;
+import com.jovanne.smartApi.infraestructure.http.response.internal.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,7 +16,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleApiClientError(ApiClientException ex){
         return ResponseEntity
                 .status(ex.getStatusCode())
-                .body(ErrorResponse.fromApiExcetipn(ex));
+                .body(ErrorResponse.fromApiException(ex));
     }
 
     @ExceptionHandler(Exception.class)

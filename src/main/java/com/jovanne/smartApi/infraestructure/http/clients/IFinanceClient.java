@@ -1,8 +1,10 @@
 package com.jovanne.smartApi.infraestructure.http.clients;
 
+import com.jovanne.smartApi.application.dtos.CategoryDTO;
 import com.jovanne.smartApi.infraestructure.config.ApiClientConfig;
 import com.jovanne.smartApi.infraestructure.config.FinanceClientConfig;
 import com.jovanne.smartApi.infraestructure.http.request.TransactionRequest;
+import com.jovanne.smartApi.infraestructure.http.response.external.CategoryResponse;
 import com.jovanne.smartApi.infraestructure.http.response.external.ExternalApiResponse;
 import com.jovanne.smartApi.infraestructure.http.response.external.TransactionResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -28,4 +30,7 @@ public interface IFinanceClient {
 
     @GetMapping("api/transacoes/periodo")
     List<TransactionResponse> transactionsByPeriod();
+
+    @GetMapping("api/categories")
+    ExternalApiResponse<List<CategoryDTO>> getCategories();
 }

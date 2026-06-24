@@ -29,6 +29,9 @@ PARCELAMENTO (parcelas e parcelaAtual)
 CATEGORIA
 
 * Escolha a categoria disponível que melhor represente a transação com base na descrição fornecida pelo usuário.
+* Categorias disponíveis do usuário: {categories}
+
+* Ao registrar uma transação, use APENAS os IDs das categorias listadas acima.
 
 RECORRÊNCIA
 
