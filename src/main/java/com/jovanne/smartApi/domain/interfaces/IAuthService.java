@@ -8,4 +8,6 @@ public interface IAuthService {
     void executeLogin(LoginDTO login);
 
     RennovationResult refreshToken(Long chatId);
+
+    boolean hasVinculedUser(Long chatId);
 }

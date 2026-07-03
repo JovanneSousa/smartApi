@@ -46,7 +46,7 @@ public class TransactionService implements ITransactionService {
     @Tool(name = "register-transactions", description = "Registra uma nova transação financeira")
     public ToolResult registerTransaction(TransactionAiDTO dtoAi) {
         var request = TransactionRequest.fromAi(dtoAi);
-        var chatId = 1L;
+        var chatId = telegramContext.getChatId();
         telegramContext.setChatId(chatId);
         try {
             var response = executeWithRetry(

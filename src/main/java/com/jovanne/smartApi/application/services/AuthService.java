@@ -50,6 +50,11 @@ public class AuthService implements IAuthService {
         return RennovationResult.SUCCESS;
     }
 
+    @Override
+    public boolean hasVinculedUser(Long chatId) {
+        return tokenStore.hasToken(chatId);
+    }
+
     private void saveTokens(Long chatId, String token, String refreshToken) {
         tokenStore.saveToken(chatId, token);
         tokenStore.saveRefreshToken(chatId, refreshToken);

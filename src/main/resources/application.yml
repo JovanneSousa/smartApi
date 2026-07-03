@@ -40,3 +40,7 @@ api:
     login: login
     password: password
     system: fin
+telegram:
+  bot:
+    token: ${TELEGRAM_BOT_TOKEN}
+    username: ${TELEGRAM_BOT_USERNAME}

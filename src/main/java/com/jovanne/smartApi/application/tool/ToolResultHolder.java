@@ -1,15 +1,16 @@
 package com.jovanne.smartApi.application.tool;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Component
-@RequestScope
 public class ToolResultHolder {
 
-    private ToolResult result;
+    private static final ThreadLocal<ToolResult> RESULT = new ThreadLocal<>();
 
-    public void set(ToolResult result) { this.result = result; }
-    public ToolResult get() { return result; }
+    public void set(ToolResult result) { RESULT.set(result); }
+    public ToolResult get() { return RESULT.get(); }
 
+    public void clear() {
+        RESULT.remove();
+    }
 }
