@@ -1,7 +1,6 @@
 package com.jovanne.smartApi.infraestructure.config;
 
 import com.jovanne.smartApi.infraestructure.telegram.SmartApiBot;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +12,7 @@ public class TelegramConfig {
 
     @Value("${telegram.bot.token}")
     private String token;
-    private SmartApiBot smartApiBot;
+    private final SmartApiBot smartApiBot;
 
     public TelegramConfig(SmartApiBot smartApiBot) {
         this.smartApiBot = smartApiBot;

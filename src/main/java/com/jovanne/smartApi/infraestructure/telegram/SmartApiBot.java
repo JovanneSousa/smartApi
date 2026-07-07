@@ -9,8 +9,13 @@ import java.util.List;
 @Component
 public class SmartApiBot implements LongPollingUpdateConsumer {
 
-    private TelegramContext telegramContext;
-    private TelegramMessageHandler messageHandler;
+    private final TelegramContext telegramContext;
+    private final TelegramMessageHandler messageHandler;
+
+    public SmartApiBot(TelegramMessageHandler messageHandler, TelegramContext telegramContext) {
+        this.telegramContext = telegramContext;
+        this.messageHandler = messageHandler;
+    }
 
     @Override
     public void consume(List<Update> updates) {

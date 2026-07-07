@@ -27,14 +27,14 @@ import java.time.format.DateTimeFormatter;
 
 @Component
 public class TelegramMessageHandler {
-    private String token;
-    private TelegramContext telegramContext;
-    private ToolResultHolder holderResult;
-    private ChatClient chatClient;
-    private TranscriptionModel transcriptionModel;
-    private IAuthService authService;
-    private TokenStore tokenStore;
-    private ITransactionService transactionService;
+    private final String token;
+    private final TelegramContext telegramContext;
+    private final ToolResultHolder holderResult;
+    private final ChatClient chatClient;
+    private final TranscriptionModel transcriptionModel;
+    private final IAuthService authService;
+    private final TokenStore tokenStore;
+    private final ITransactionService transactionService;
     private final TelegramClient telegramClient;
 
     public TelegramMessageHandler(
