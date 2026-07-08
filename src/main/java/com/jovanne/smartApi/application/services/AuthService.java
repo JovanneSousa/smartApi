@@ -3,7 +3,6 @@ package com.jovanne.smartApi.application.services;
 import com.jovanne.smartApi.application.dtos.LoginDTO;
 import com.jovanne.smartApi.application.dtos.UserDataDTO;
 import com.jovanne.smartApi.domain.entities.RennovationResult;
-import com.jovanne.smartApi.domain.exceptions.apiExceptions.ApiBadRequestException;
 import com.jovanne.smartApi.domain.exceptions.apiExceptions.ApiServerErrorException;
 import com.jovanne.smartApi.domain.interfaces.IAuthService;
 import com.jovanne.smartApi.infraestructure.http.request.RefreshTokenRequest;
@@ -15,7 +14,6 @@ import com.jovanne.smartApi.infraestructure.http.request.LoginRequest;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.UUID;
 
 @Service
