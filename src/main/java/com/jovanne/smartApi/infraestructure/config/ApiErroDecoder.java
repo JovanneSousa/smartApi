@@ -19,7 +19,7 @@ public class ApiErroDecoder extends BaseErrorDecoder implements ErrorDecoder {
             case 500 -> new ApiServerErrorException(errorResponse);
             default -> new ApiClientException(
                     response.status(),
-                    "Erro inesperado do serviço externo",
+                    "Erro inesperado do serviço externo, status: " + response.status() + " - " + response.headers().toString(),
                     errorResponse
             );
         };
