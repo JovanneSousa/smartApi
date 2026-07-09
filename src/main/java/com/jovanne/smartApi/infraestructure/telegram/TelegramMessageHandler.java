@@ -101,8 +101,6 @@ public class TelegramMessageHandler {
 
                 sendMessage(chatId, "Login realizado! Pode começar a usar.");
             } catch (Exception ex) {
-                ex.printStackTrace();
-                System.out.println(ex.getCause().getMessage() != null ? ex.getCause().getMessage() : ex.getMessage());
                 sendMessage(chatId, "Login inválido. Tente: login:senha");
             }
         } else {
@@ -131,6 +129,8 @@ public class TelegramMessageHandler {
             }
 
         } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println(ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
             sendMessage(chatId, "Erro ao processar sua mensagem. Tente novamente.");
         }
     }
