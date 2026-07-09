@@ -110,13 +110,16 @@ public class TelegramMessageHandler {
 
     private void handleText(Long chatId, String userMessage) {
         try {
-            var categories = transactionService.listCategories();
+            var categories = CategoryDTO.formatSystemPrompt(
+                    transactionService.listCategories());
             var currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+            System.out.println("chamou categorias: " + categories);
 
             var result = chatClient.prompt()
                     .system(s -> s
                             .param("currentDateTime", currentDateTime)
-                            .param("categories", CategoryDTO.formatSystemPrompt(categories)))
+                            .param("categories", categories))
                     .user(userMessage)
                     .call()
                     .content();
