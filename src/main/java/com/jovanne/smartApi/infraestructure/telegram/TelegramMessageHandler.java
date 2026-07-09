@@ -129,8 +129,12 @@ public class TelegramMessageHandler {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println(ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage());
+            Throwable t = ex;
+            while (t != null) {
+                System.out.println("Classe: " + t.getClass().getName());
+                System.out.println("Mensagem: " + t.getMessage());
+                t = t.getCause();
+            }
             sendMessage(chatId, "Erro ao processar sua mensagem. Tente novamente.");
         }
     }
